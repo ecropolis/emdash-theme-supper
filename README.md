@@ -2,6 +2,8 @@
 
 A theme for restaurants, cafés, and bars whose website exists to answer three questions: *what's on the menu, when are you open, and how do I get a table?* Built with [EmDash](https://github.com/emdash-cms/emdash) and deployed on Cloudflare Workers with D1 and R2.
 
+**Live demo:** [supper.superherotech.ai](https://supper.superherotech.ai)
+
 **Create a site from this theme:**
 
 ```bash

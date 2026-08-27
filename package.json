@@ -17,7 +17,8 @@
   "emdash": {
     "label": "Supper",
     "description": "For restaurants, cafes, and bars: a structured menu with sections, prices and dietary flags, plus hours, gallery, and reservation CTAs",
-    "seed": "seed/seed.json"
+    "seed": "seed/seed.json",
+    "preview": "https://supper.superherotech.ai"
   },
   "scripts": {
     "dev": "astro dev",
