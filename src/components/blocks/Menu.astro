@@ -1,0 +1,251 @@
+---
+/**
+ * Menu block. A placement marker with display options; the dishes come
+ * from the `menu_items` collection (optionally filtered to one
+ * `menu_section` taxonomy term), so editors manage dishes as real
+ * content entries.
+ *
+ * Two looks, driven by `showImages`: photo cards (homepage favorites)
+ * or the classic name····price list (menu sections).
+ */
+import { getEmDashCollection, getEntriesByTerm } from "emdash";
+import { Image } from "emdash/ui";
+
+interface Props {
+	node: {
+		_key?: string;
+		headline?: string;
+		subheadline?: string;
+		section?: string;
+		featuredOnly?: boolean;
+		limit?: number;
+		showImages?: boolean;
+		ctaLabel?: string;
+		ctaUrl?: string;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, headline, subheadline, featuredOnly, showImages } = node;
+const section = node.section?.trim();
+
+let dishes;
+if (section) {
+	dishes = await getEntriesByTerm("menu_items", "menu_section", section);
+} else {
+	const { entries, cacheHint } = await getEmDashCollection("menu_items", {
+		status: "published",
+		orderBy: { sort_order: "asc" },
+		...(featuredOnly ? { where: { featured: true } } : {}),
+	});
+	if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+	dishes = entries;
+}
+
+dishes = [...dishes].sort(
+	(a: any, b: any) => (a.data.sort_order ?? 0) - (b.data.sort_order ?? 0),
+);
+if (featuredOnly) dishes = dishes.filter((d: any) => !!d.data.featured);
+if (node.limit) dishes = dishes.slice(0, node.limit);
+
+const cta =
+	node.ctaLabel && node.ctaUrl ? { label: node.ctaLabel, url: node.ctaUrl } : undefined;
+
+const dietaryChips = (value?: string) =>
+	(value ?? "")
+		.split(",")
+		.map((s) => s.trim())
+		.filter(Boolean);
+---
+
+<section class="menu-block section" id={_key}>
+	<div class="container">
+		{(headline || subheadline) && (
+			<header class="section-header">
+				{headline && <h2 class="section-headline">{headline}</h2>}
+				{subheadline && <p class="section-subheadline">{subheadline}</p>}
+			</header>
+		)}
+
+		{
+			showImages ? (
+				<div class="dish-grid">
+					{dishes.map((dish: any) => (
+						<div class="dish-card">
+							{dish.data.image && (
+								<div class="dish-image">
+									<Image image={dish.data.image} />
+								</div>
+							)}
+							<div class="dish-card-body">
+								<div class="dish-row">
+									<h3 class="dish-name">{dish.data.title}</h3>
+									{dish.data.price && <span class="dish-price">{dish.data.price}</span>}
+								</div>
+								{dish.data.description && <p class="dish-description">{dish.data.description}</p>}
+								{dietaryChips(dish.data.dietary).length > 0 && (
+									<span class="dish-dietary">
+										{dietaryChips(dish.data.dietary).map((chip) => (
+											<i class="dietary-chip">{chip}</i>
+										))}
+									</span>
+								)}
+							</div>
+						</div>
+					))}
+				</div>
+			) : (
+				<ul class="dish-list">
+					{dishes.map((dish: any) => (
+						<li class="dish">
+							<div class="dish-row">
+								<h3 class="dish-name">
+									{dish.data.title}
+									{dietaryChips(dish.data.dietary).map((chip) => (
+										<i class="dietary-chip">{chip}</i>
+									))}
+								</h3>
+								<span class="dish-leader" aria-hidden="true" />
+								{dish.data.price && <span class="dish-price">{dish.data.price}</span>}
+							</div>
+							{dish.data.description && <p class="dish-description">{dish.data.description}</p>}
+						</li>
+					))}
+				</ul>
+			)
+		}
+
+		{cta && (
+			<div class="menu-cta">
+				<a href={cta.url} class="btn btn-secondary">{cta.label}</a>
+			</div>
+		)}
+	</div>
+</section>
+
+<style>
+	/* Card look (showImages) */
+	.dish-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--spacing-xl);
+	}
+
+	.dish-card {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		transition:
+			transform var(--transition-base),
+			box-shadow var(--transition-base),
+			border-color var(--transition-base);
+	}
+
+	.dish-card:hover {
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-lg);
+		border-color: var(--color-brand-soft);
+	}
+
+	.dish-image :global(img) {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+
+	.dish-card-body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+		padding: var(--spacing-lg);
+	}
+
+	/* List look (classic menu) */
+	.dish-list {
+		list-style: none;
+		max-width: var(--max-width);
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xl);
+		padding: 0;
+	}
+
+	/* Shared */
+	.dish-row {
+		display: flex;
+		align-items: baseline;
+		gap: var(--spacing-sm);
+	}
+
+	.dish-name {
+		font-size: var(--font-size-lg);
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--spacing-xs);
+	}
+
+	.dish-leader {
+		flex: 1;
+		border-bottom: 1px dotted var(--color-border);
+		transform: translateY(-4px);
+	}
+
+	.dish-price {
+		font-family: var(--font-heading);
+		font-size: var(--font-size-lg);
+		font-weight: var(--font-weight-heading);
+		color: var(--color-brand);
+		white-space: nowrap;
+	}
+
+	.dish-price::before {
+		content: "$";
+		font-size: 0.75em;
+		opacity: 0.7;
+		margin-right: 1px;
+	}
+
+	.dish-description {
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+		line-height: var(--leading-normal);
+		margin-top: var(--spacing-xs);
+		max-width: 60ch;
+	}
+
+	.dish-dietary {
+		display: inline-flex;
+		gap: var(--spacing-xs);
+	}
+
+	.dietary-chip {
+		font-style: normal;
+		font-family: var(--font-body);
+		font-size: var(--font-size-xs);
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		color: var(--color-success);
+		border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
+		border-radius: var(--radius-sm);
+		padding: 0 var(--spacing-xs);
+	}
+
+	.menu-cta {
+		text-align: center;
+		margin-top: var(--spacing-2xl);
+	}
+
+	@media (max-width: 900px) {
+		.dish-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 600px) {
+		.dish-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

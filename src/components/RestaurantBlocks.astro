@@ -1,0 +1,38 @@
+---
+/**
+ * Custom Portable Text renderer for restaurant blocks.
+ *
+ * Maps custom block types (resto.hero, resto.menu, etc.) to their
+ * corresponding Astro components. Standard Portable Text (paragraphs,
+ * headings, lists) renders with the default components, so pages can mix
+ * prose and sections freely.
+ */
+import type { PortableTextBlock } from "emdash";
+import { PortableText } from "emdash/ui";
+import Hero from "./blocks/Hero.astro";
+import Menu from "./blocks/Menu.astro";
+import Hours from "./blocks/Hours.astro";
+import Gallery from "./blocks/Gallery.astro";
+import Reviews from "./blocks/Reviews.astro";
+import FAQ from "./blocks/FAQ.astro";
+import CTABanner from "./blocks/CTABanner.astro";
+
+interface Props {
+	value: PortableTextBlock[];
+}
+
+const { value } = Astro.props;
+
+// Custom block type components
+const restoTypes = {
+	"resto.hero": Hero,
+	"resto.menu": Menu,
+	"resto.hours": Hours,
+	"resto.gallery": Gallery,
+	"resto.reviews": Reviews,
+	"resto.faq": FAQ,
+	"resto.cta": CTABanner,
+};
+---
+
+<PortableText value={value} components={{ type: restoTypes }} />

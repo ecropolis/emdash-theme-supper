@@ -1,0 +1,54 @@
+---
+/**
+ * Catch-all for entries in the `pages` collection: a page with slug
+ * `about` renders at /about. More specific routes (/, /services/*)
+ * take precedence over this catch-all.
+ */
+import { getEmDashEntry } from "emdash";
+import Base from "../layouts/Base.astro";
+import RestaurantBlocks from "../components/RestaurantBlocks.astro";
+
+const { slug } = Astro.params;
+const { entry: page, cacheHint } = await getEmDashEntry("pages", slug!);
+
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+if (!page) {
+	return Astro.redirect("/404");
+}
+---
+
+<Base title={page.data.title}>
+	<div class="page-content">
+		<RestaurantBlocks value={page.data.content ?? []} />
+	</div>
+</Base>
+
+<style>
+	/*
+	 * Custom blocks render their own full-width <section>s; everything
+	 * else is prose from the default Portable Text renderer, which needs
+	 * a reading-width column.
+	 */
+	.page-content > :global(:not(section)) {
+		max-width: var(--max-width);
+		margin-inline: auto;
+		padding-inline: var(--spacing-lg);
+		line-height: var(--leading-relaxed);
+	}
+
+	.page-content > :global(p) {
+		margin-bottom: var(--spacing-md);
+	}
+
+	.page-content > :global(h2) {
+		margin-top: var(--spacing-xl);
+		margin-bottom: var(--spacing-sm);
+	}
+
+	.page-content > :global(ul),
+	.page-content > :global(ol) {
+		margin-bottom: var(--spacing-md);
+		padding-left: calc(var(--spacing-lg) + var(--spacing-lg));
+	}
+</style>

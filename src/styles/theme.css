@@ -1,0 +1,41 @@
+/*
+  theme.css -- your theme overrides. This is the file to edit to
+  retheme the site.
+
+  Every design token lives in src/styles/tokens.css (colors, gradients,
+  type scale, spacing, layout, shadows) with its default value. Override
+  any of them here: declarations in this file are unlayered, so they
+  always beat the @layer base defaults in tokens.css.
+
+  Colors are defined with light-dark(). Overriding with a plain color
+  changes light and dark mode at once; use light-dark(<light>, <dark>)
+  to set different values per mode.
+
+  Supper's shipped identity: candlelit dinner-house — warm cream by day,
+  near-black by night, wine-red brand with an old-gold accent, and
+  Fraunces (a soft serif) carrying every heading. Swap the brand pair
+  and the site restyles; the Compass Customizer does the same at runtime.
+*/
+
+:root {
+	/* Warm grounds instead of the default cool slate */
+	--color-bg: light-dark(#faf6f0, #171213);
+	--color-surface: light-dark(#ffffff, #211a1b);
+	--color-text: light-dark(#241d1a, #efe6dc);
+	--color-muted: light-dark(#766a60, #a89a90);
+	--color-border: light-dark(#e6dccd, #3a2f2e);
+
+	/* Wine + old gold */
+	--color-brand: light-dark(#8e3b46, #d98b91);
+	--color-brand-strong: light-dark(#732d38, #c76d75);
+	--color-brand-soft: light-dark(#b06771, #e8b3b7);
+	--color-accent: #b98a2f;
+	--color-accent-soft: #d9b25e;
+
+	/* Serif display voice */
+	--font-heading: var(--font-display-face, Georgia, serif);
+	--font-weight-heading: 600;
+	--font-weight-display: 600;
+	--tracking-tight: -0.01em;
+	--tracking-snug: -0.005em;
+}

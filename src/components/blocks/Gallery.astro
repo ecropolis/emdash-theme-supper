@@ -1,0 +1,59 @@
+---
+interface Props {
+	node: {
+		_key?: string;
+		headline?: string;
+		images: Array<{
+			url: string;
+			alt?: string;
+		}>;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, headline } = node;
+const images = (node.images ?? []).filter((i) => i.url);
+---
+
+<section class="gallery section" id={_key}>
+	<div class="container">
+		{headline && (
+			<header class="section-header">
+				<h2 class="section-headline">{headline}</h2>
+			</header>
+		)}
+		<div class="gallery-grid" data-count={images.length}>
+			{images.map((image) => (
+				<figure class="gallery-item">
+					<img src={image.url} alt={image.alt ?? ""} loading="lazy" />
+				</figure>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.gallery-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: var(--spacing-md);
+	}
+
+	.gallery-item {
+		margin: 0;
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+
+	.gallery-item img {
+		width: 100%;
+		height: 100%;
+		aspect-ratio: 1;
+		object-fit: cover;
+		transition: transform var(--transition-slow);
+	}
+
+	.gallery-item:hover img {
+		transform: scale(1.03);
+	}
+</style>

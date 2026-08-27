@@ -1,0 +1,167 @@
+---
+import { Icon } from "astro-iconset/components";
+
+interface Props {
+	node: {
+		_key?: string;
+		headline?: string;
+		hours: Array<{
+			label: string;
+			value: string;
+		}>;
+		phone?: string;
+		email?: string;
+		address?: string;
+		note?: string;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, headline, hours, phone, email, address, note } = node;
+---
+
+<section class="hours section" id={_key}>
+	<div class="container">
+		{headline && (
+			<header class="section-header">
+				<h2 class="section-headline">{headline}</h2>
+			</header>
+		)}
+		<div class="hours-columns">
+			<div class="hours-card">
+				<h3 class="hours-heading">
+					<Icon name="ph:clock" aria-hidden="true" /> Hours
+				</h3>
+				<dl class="hours-table">
+					{hours.map((row) => (
+						<div class="hours-row">
+							<dt>{row.label}</dt>
+							<dd>{row.value}</dd>
+						</div>
+					))}
+				</dl>
+				{note && <p class="hours-note">{note}</p>}
+			</div>
+			<div class="hours-card">
+				<h3 class="hours-heading">
+					<Icon name="ph:map-pin" aria-hidden="true" /> Find us
+				</h3>
+				<address class="contact-list">
+					{address && <p class="contact-address">{address}</p>}
+					{phone && (
+						<p>
+							<Icon name="ph:phone" aria-hidden="true" />
+							<a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>{phone}</a>
+						</p>
+					)}
+					{email && (
+						<p>
+							<Icon name="ph:envelope" aria-hidden="true" />
+							<a href={`mailto:${email}`}>{email}</a>
+						</p>
+					)}
+				</address>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hours-columns {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--spacing-xl);
+		max-width: 880px;
+		margin: 0 auto;
+	}
+
+	.hours-card {
+		padding: var(--spacing-xl);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	.hours-heading {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+		font-size: var(--font-size-lg);
+		margin-bottom: var(--spacing-lg);
+		color: var(--color-text);
+	}
+
+	.hours-heading :global(svg) {
+		color: var(--color-brand);
+	}
+
+	.hours-table {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+
+	.hours-row {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--spacing-md);
+		font-size: var(--font-size-sm);
+		padding-bottom: var(--spacing-sm);
+		border-bottom: 1px dashed var(--color-border);
+	}
+
+	.hours-row dt {
+		color: var(--color-muted);
+	}
+
+	.hours-row dd {
+		font-weight: 600;
+	}
+
+	.hours-note {
+		margin-top: var(--spacing-md);
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+		line-height: var(--leading-relaxed);
+	}
+
+	.contact-list {
+		font-style: normal;
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.contact-list p {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--spacing-sm);
+		font-size: var(--font-size-sm);
+		line-height: var(--leading-normal);
+	}
+
+	.contact-list :global(svg) {
+		color: var(--color-brand);
+		flex-shrink: 0;
+		margin-top: 2px;
+	}
+
+	.contact-list a {
+		color: var(--color-text);
+		font-weight: 600;
+	}
+
+	.contact-list a:hover {
+		color: var(--color-brand);
+	}
+
+	.contact-address {
+		white-space: pre-line;
+	}
+
+	@media (max-width: 700px) {
+		.hours-columns {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

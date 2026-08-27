@@ -1,0 +1,540 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "Supper",
+		"description": "A restaurant theme: structured menu with sections and dietary flags, hours, gallery, reviews, reservation CTAs",
+		"author": "Ecropolis"
+	},
+	"settings": {
+		"title": "Ember & Rye",
+		"tagline": "Wood-fire kitchen & rye bar in Logan Square"
+	},
+	"collections": [
+		{
+			"slug": "pages",
+			"label": "Pages",
+			"labelSingular": "Page",
+			"supports": ["drafts", "revisions", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "menu_items",
+			"label": "Menu Items",
+			"labelSingular": "Menu Item",
+			"supports": ["drafts", "revisions"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Dish name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "description",
+					"label": "Description (one line, menu style)",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "price",
+					"label": "Price (number only, e.g. 24)",
+					"type": "string"
+				},
+				{
+					"slug": "image",
+					"label": "Photo (only shown on card layouts)",
+					"type": "image"
+				},
+				{
+					"slug": "dietary",
+					"label": "Dietary flags (comma-separated: V, VG, GF)",
+					"type": "string"
+				},
+				{
+					"slug": "featured",
+					"label": "Featured (appears in \"favorites\" blocks)",
+					"type": "boolean"
+				},
+				{
+					"slug": "sort_order",
+					"label": "Sort order (within its section)",
+					"type": "integer"
+				}
+			]
+		}
+	],
+	"taxonomies": [
+		{
+			"name": "menu_section",
+			"label": "Menu Sections",
+			"labelSingular": "Menu Section",
+			"hierarchical": false,
+			"collections": ["menu_items"],
+			"terms": [
+				{ "slug": "starters", "label": "Starters" },
+				{ "slug": "mains", "label": "Mains" },
+				{ "slug": "desserts", "label": "Desserts" },
+				{ "slug": "drinks", "label": "Drinks" }
+			]
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Primary Navigation",
+			"items": [
+				{ "type": "custom", "label": "Menu", "url": "/menu" },
+				{ "type": "custom", "label": "Our story", "url": "/about" },
+				{ "type": "custom", "label": "Reservations", "url": "/reservations" }
+			]
+		},
+		{
+			"name": "cta",
+			"label": "Header CTA (first item renders as the reserve button)",
+			"items": [{ "type": "custom", "label": "Reserve a table", "url": "/reservations" }]
+		},
+		{
+			"name": "footer_menu",
+			"label": "Footer: Menu",
+			"items": [
+				{ "type": "custom", "label": "Starters", "url": "/menu#starters" },
+				{ "type": "custom", "label": "Mains", "url": "/menu#mains" },
+				{ "type": "custom", "label": "Drinks", "url": "/menu#drinks" },
+				{ "type": "custom", "label": "Full menu", "url": "/menu" }
+			]
+		},
+		{
+			"name": "footer_visit",
+			"label": "Footer: Visit",
+			"items": [
+				{ "type": "custom", "label": "Our story", "url": "/about" },
+				{ "type": "custom", "label": "Hours & directions", "url": "/reservations#visit" },
+				{ "type": "custom", "label": "Reserve a table", "url": "/reservations" }
+			]
+		}
+	],
+	"content": {
+		"pages": [
+			{
+				"id": "home",
+				"slug": "home",
+				"status": "published",
+				"data": {
+					"title": "Home",
+					"content": [
+						{
+							"_type": "resto.hero",
+							"_key": "hero",
+							"badge": "Logan Square, Chicago",
+							"headline": "Cooked over fire, poured over rye",
+							"subheadline": "Ember & Rye is a forty-seat dining room built around a wood-burning hearth and a bar that takes whiskey seriously. Dinner Tuesday through Sunday; the fire gets lit at three.",
+							"primaryCtaLabel": "Reserve a table",
+							"primaryCtaUrl": "/reservations",
+							"secondaryCtaLabel": "See the menu",
+							"secondaryCtaUrl": "/menu",
+							"imageUrl": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1000&h=750&fit=crop",
+							"imageAlt": "The bar at night — bottles backlit under warm pendant lights"
+						},
+						{
+							"_type": "resto.menu",
+							"_key": "favorites",
+							"headline": "Tonight's favorites",
+							"subheadline": "Three things people cross the city for. The full menu changes with the seasons; these don't leave.",
+							"featuredOnly": true,
+							"showImages": true,
+							"limit": 3,
+							"ctaLabel": "See the full menu",
+							"ctaUrl": "/menu"
+						},
+						{
+							"_type": "resto.reviews",
+							"_key": "reviews",
+							"headline": "What guests say",
+							"reviews": [
+								{
+									"quote": "The ribs come off the fire like they have somewhere better to be. We've been back four times in two months.",
+									"author": "Renata M.",
+									"detail": "Regular, Tuesdays"
+								},
+								{
+									"quote": "A bar that lists its rye by farm and vintage, in a room lit like a campfire. My favorite date spot in Logan Square.",
+									"author": "Devon C.",
+									"detail": "Anniversary dinner"
+								},
+								{
+									"quote": "They took our party of nine on a Friday, split the checks without sighing, and the mushroom pot pie converted a steak guy.",
+									"author": "Priya S.",
+									"detail": "Birthday, party of 9"
+								}
+							]
+						},
+						{
+							"_type": "resto.faq",
+							"_key": "faq",
+							"headline": "Good to know",
+							"items": [
+								{
+									"question": "Do you take walk-ins?",
+									"answer": "Always — the bar and the six hearth seats are held for walk-ins every night. The dining room is mostly reservations, but early and late walk-ins usually land a table."
+								},
+								{
+									"question": "Can you handle allergies and dietary needs?",
+									"answer": "Yes. The menu marks vegetarian, vegan, and gluten-free dishes, and the kitchen will adapt most plates — tell your server, or note it on your reservation."
+								},
+								{
+									"question": "Is there parking?",
+									"answer": "Street parking on Kedzie and the side streets, and we're a block from the Logan Square Blue Line stop. The bike corral out front is ours."
+								}
+							]
+						},
+						{
+							"_type": "resto.cta",
+							"_key": "reserve",
+							"headline": "The hearth seats go first",
+							"subheadline": "Six stools face the fire. If you want to watch your dinner cook, say so when you book.",
+							"ctaLabel": "Reserve a table",
+							"ctaUrl": "/reservations"
+						}
+					]
+				}
+			},
+			{
+				"id": "about",
+				"slug": "about",
+				"status": "published",
+				"data": {
+					"title": "Our story",
+					"content": [
+						{
+							"_type": "resto.hero",
+							"_key": "about-hero",
+							"headline": "Twelve seats grew into a dining room",
+							"subheadline": "Ember & Rye started as a twelve-seat supper club in a Logan Square walk-up. The hearth came from a farmhouse in Galena; the rye list started as one shelf.",
+							"centered": true
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We cook almost everything over oak and cherry — not because it's fashionable, but because fire makes you pay attention. There's no walk-away setting on a hearth. The menu is short on purpose: a dozen dishes we can stand behind on a Saturday at nine, sourced from farms we can name without checking."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The bar carries about ninety ryes and bourbons, poured honest. If you don't know where to start, tell the bartender what you drink at home and how brave you're feeling — that conversation is the whole wine list speech, and it works better."
+								}
+							]
+						},
+						{
+							"_type": "resto.gallery",
+							"_key": "gallery",
+							"headline": "The room",
+							"images": [
+								{
+									"url": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&h=900&fit=crop",
+									"alt": "The dining room set for service"
+								},
+								{
+									"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&h=900&fit=crop",
+									"alt": "A plated dish on a candlelit table"
+								},
+								{
+									"url": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=900&h=900&fit=crop",
+									"alt": "Rye poured over a large ice cube at the bar"
+								},
+								{
+									"url": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=900&h=900&fit=crop",
+									"alt": "House loaves dusted with rye flour"
+								}
+							]
+						},
+						{
+							"_type": "resto.cta",
+							"_key": "about-reserve",
+							"headline": "Come sit by the fire",
+							"subheadline": "Dinner Tuesday through Sunday from five. The hearth seats are first come, first flame.",
+							"ctaLabel": "Reserve a table",
+							"ctaUrl": "/reservations"
+						}
+					]
+				}
+			},
+			{
+				"id": "reservations",
+				"slug": "reservations",
+				"status": "published",
+				"data": {
+					"title": "Reservations",
+					"content": [
+						{
+							"_type": "resto.hero",
+							"_key": "reservations-hero",
+							"headline": "Reserve a table",
+							"subheadline": "Tell us when you're coming and how many; we confirm by email the same day. Parties of seven or more, give us a ring instead.",
+							"centered": true
+						},
+						{
+							"_type": "resto.hours",
+							"_key": "visit",
+							"headline": "Hours & directions",
+							"hours": [
+								{ "label": "Tue – Thu", "value": "5pm – 10pm" },
+								{ "label": "Fri – Sat", "value": "5pm – 11pm" },
+								{ "label": "Sunday", "value": "4pm – 9pm" },
+								{ "label": "Monday", "value": "Closed" }
+							],
+							"phone": "(773) 555-0182",
+							"email": "hello@emberandrye.example",
+							"address": "2611 N Kedzie Ave\nChicago, IL 60647",
+							"note": "The bar and hearth seats are walk-in only, every night. Kitchen takes last orders 45 minutes before close."
+						},
+						{
+							"_type": "compass.form",
+							"_key": "reservation-form",
+							"headline": "Request a table",
+							"description": "We confirm by email the same day — this isn't instant booking yet, a human checks the book.",
+							"formKey": "reservations",
+							"submitLabel": "Request reservation",
+							"successMessage": "Request received — we'll confirm by email today. If it's for tonight, call us instead.",
+							"fields": [
+								{ "name": "name", "label": "Name", "type": "text", "required": true },
+								{ "name": "email", "label": "Email", "type": "email", "required": true },
+								{ "name": "phone", "label": "Phone", "type": "tel", "required": false },
+								{ "name": "details", "label": "Date, time & party size", "type": "textarea", "required": true }
+							]
+						},
+						{
+							"_type": "resto.faq",
+							"_key": "reservations-faq",
+							"headline": "Before you book",
+							"items": [
+								{
+									"question": "What about large parties?",
+									"answer": "Seven to fourteen guests eat family-style at the harvest table — call and we'll plan the menu together. Beyond fourteen, that's a buyout conversation and we're happy to have it."
+								},
+								{
+									"question": "What if I'm running late?",
+									"answer": "We hold tables fifteen minutes, longer if you call. After that the hearth seats become fair game — but we'll always try to fit you back in."
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"menu_items": [
+			{
+				"id": "fire-roasted-beets",
+				"slug": "fire-roasted-beets",
+				"status": "published",
+				"data": {
+					"title": "Fire-roasted beets",
+					"description": "Whipped ricotta, rye crumbs, chive oil",
+					"price": "14",
+					"dietary": "V",
+					"featured": false,
+					"sort_order": 1
+				},
+				"taxonomies": { "menu_section": ["starters"] }
+			},
+			{
+				"id": "chicken-liver-toast",
+				"slug": "chicken-liver-toast",
+				"status": "published",
+				"data": {
+					"title": "Smoked chicken-liver toast",
+					"description": "Pickled shallot, mustard seed, charred sourdough",
+					"price": "15",
+					"dietary": "",
+					"featured": false,
+					"sort_order": 2
+				},
+				"taxonomies": { "menu_section": ["starters"] }
+			},
+			{
+				"id": "hearth-bread",
+				"slug": "hearth-bread",
+				"status": "published",
+				"data": {
+					"title": "Hearth bread & cultured butter",
+					"description": "Burnt-onion salt, baked in the fire every afternoon",
+					"price": "8",
+					"dietary": "V",
+					"featured": false,
+					"sort_order": 3
+				},
+				"taxonomies": { "menu_section": ["starters"] }
+			},
+			{
+				"id": "half-chicken",
+				"slug": "half-chicken",
+				"status": "published",
+				"data": {
+					"title": "Half chicken off the hearth",
+					"description": "Schmaltz potatoes, house giardiniera",
+					"price": "29",
+					"dietary": "GF",
+					"featured": false,
+					"sort_order": 10
+				},
+				"taxonomies": { "menu_section": ["mains"] }
+			},
+			{
+				"id": "smoked-ribs",
+				"slug": "smoked-ribs",
+				"status": "published",
+				"data": {
+					"title": "Slow-smoked pork ribs",
+					"description": "Sorghum glaze, house pickles, six hours over oak",
+					"price": "32",
+					"dietary": "GF",
+					"featured": true,
+					"sort_order": 11,
+					"image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&h=900&fit=crop",
+							"alt": "A rack of glazed ribs on a board with tomatoes and pickles",
+							"filename": "smoked-ribs.jpg"
+						}
+					}
+				},
+				"taxonomies": { "menu_section": ["mains"] }
+			},
+			{
+				"id": "mushroom-pot-pie",
+				"slug": "mushroom-pot-pie",
+				"status": "published",
+				"data": {
+					"title": "Cast-iron mushroom pot pie",
+					"description": "Black garlic, thyme, rye crust",
+					"price": "26",
+					"dietary": "V",
+					"featured": false,
+					"sort_order": 12
+				},
+				"taxonomies": { "menu_section": ["mains"] }
+			},
+			{
+				"id": "hanger-steak",
+				"slug": "hanger-steak",
+				"status": "published",
+				"data": {
+					"title": "Hanger steak",
+					"description": "Bone-marrow butter, watercress, coals-finished",
+					"price": "38",
+					"dietary": "GF",
+					"featured": false,
+					"sort_order": 13
+				},
+				"taxonomies": { "menu_section": ["mains"] }
+			},
+			{
+				"id": "burnt-honey-sundae",
+				"slug": "burnt-honey-sundae",
+				"status": "published",
+				"data": {
+					"title": "Burnt-honey sundae",
+					"description": "Rye caramel, malt crunch, soft cream",
+					"price": "11",
+					"dietary": "V",
+					"featured": true,
+					"sort_order": 20,
+					"image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=1200&h=900&fit=crop",
+							"alt": "Caramel pouring over a soft-serve sundae",
+							"filename": "burnt-honey-sundae.jpg"
+						}
+					}
+				},
+				"taxonomies": { "menu_section": ["desserts"] }
+			},
+			{
+				"id": "chocolate-rye-brownie",
+				"slug": "chocolate-rye-brownie",
+				"status": "published",
+				"data": {
+					"title": "Chocolate rye brownie",
+					"description": "Smoked salt, cold cream",
+					"price": "10",
+					"dietary": "V",
+					"featured": false,
+					"sort_order": 21
+				},
+				"taxonomies": { "menu_section": ["desserts"] }
+			},
+			{
+				"id": "rye-old-fashioned",
+				"slug": "rye-old-fashioned",
+				"status": "published",
+				"data": {
+					"title": "Rye Old Fashioned",
+					"description": "House demerara, charred orange, your pick of ninety ryes",
+					"price": "15",
+					"dietary": "",
+					"featured": true,
+					"sort_order": 30,
+					"image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=1200&h=900&fit=crop",
+							"alt": "An old fashioned garnished with rosemary on the bar",
+							"filename": "rye-old-fashioned.jpg"
+						}
+					}
+				},
+				"taxonomies": { "menu_section": ["drinks"] }
+			},
+			{
+				"id": "ember-boulevardier",
+				"slug": "ember-boulevardier",
+				"status": "published",
+				"data": {
+					"title": "Ember Boulevardier",
+					"description": "Amaro, sweet vermouth, torched rosemary",
+					"price": "16",
+					"dietary": "",
+					"featured": false,
+					"sort_order": 31
+				},
+				"taxonomies": { "menu_section": ["drinks"] }
+			},
+			{
+				"id": "chai-cider",
+				"slug": "chai-cider",
+				"status": "published",
+				"data": {
+					"title": "Wood-fired chai cider",
+					"description": "Non-alcoholic — warm spice, pressed apples off the hearth",
+					"price": "8",
+					"dietary": "VG",
+					"featured": false,
+					"sort_order": 32
+				},
+				"taxonomies": { "menu_section": ["drinks"] }
+			}
+		]
+	}
+}

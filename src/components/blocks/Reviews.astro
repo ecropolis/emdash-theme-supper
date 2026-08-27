@@ -1,0 +1,99 @@
+---
+import { Icon } from "astro-iconset/components";
+
+interface Props {
+	node: {
+		_key?: string;
+		headline?: string;
+		reviews: Array<{
+			quote: string;
+			author: string;
+			detail?: string;
+		}>;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, headline, reviews } = node;
+---
+
+<section class="reviews section" id={_key}>
+	<div class="container">
+		{headline && (
+			<header class="section-header">
+				<h2 class="section-headline">{headline}</h2>
+			</header>
+		)}
+		<div class="testimonials-grid">
+			{reviews.map((t) => (
+				<figure class="testimonial-card">
+					<div class="testimonial-stars" aria-hidden="true">
+						{Array.from({ length: 5 }).map(() => (
+							<Icon name="ph:star" />
+						))}
+					</div>
+					<blockquote class="testimonial-quote">{t.quote}</blockquote>
+					<figcaption class="testimonial-author">
+						<span class="testimonial-name">{t.author}</span>
+						{t.detail && <span class="testimonial-detail">{t.detail}</span>}
+					</figcaption>
+				</figure>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.testimonials-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: var(--spacing-xl);
+	}
+
+	.testimonial-card {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-md);
+		padding: var(--spacing-xl);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	.testimonial-stars {
+		display: flex;
+		gap: 2px;
+		color: var(--color-warning);
+		font-size: var(--font-size-base);
+	}
+
+	.testimonial-quote {
+		font-size: var(--font-size-base);
+		line-height: var(--leading-relaxed);
+		flex: 1;
+	}
+
+	.testimonial-quote::before {
+		content: "\201C";
+	}
+
+	.testimonial-quote::after {
+		content: "\201D";
+	}
+
+	.testimonial-author {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xs);
+	}
+
+	.testimonial-name {
+		font-weight: 600;
+		font-size: var(--font-size-sm);
+	}
+
+	.testimonial-detail {
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+	}
+</style>

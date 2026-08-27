@@ -1,0 +1,62 @@
+---
+import { Icon } from "astro-iconset/components";
+
+interface Props {
+	node: {
+		_key?: string;
+		headline: string;
+		subheadline?: string;
+		ctaLabel?: string;
+		ctaUrl?: string;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, headline, subheadline } = node;
+
+const cta =
+	node.ctaLabel && node.ctaUrl ? { label: node.ctaLabel, url: node.ctaUrl } : undefined;
+---
+
+<section class="cta-banner section" id={_key}>
+	<div class="container">
+		<div class="cta-inner">
+			<h2 class="cta-headline">{headline}</h2>
+			{subheadline && <p class="cta-subheadline">{subheadline}</p>}
+			{cta && (
+				<a href={cta.url} class="btn btn-primary btn-lg cta-button">
+					<Icon name="ph:fork-knife" aria-hidden="true" />
+					{cta.label}
+				</a>
+			)}
+		</div>
+	</div>
+</section>
+
+<style>
+	.cta-inner {
+		text-align: center;
+		padding: var(--spacing-3xl) var(--spacing-xl);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		max-width: 880px;
+		margin: 0 auto;
+	}
+
+	.cta-headline {
+		font-size: var(--font-size-3xl);
+		font-weight: var(--font-weight-display);
+		letter-spacing: var(--tracking-snug);
+	}
+
+	.cta-subheadline {
+		margin-top: var(--spacing-md);
+		font-size: var(--font-size-lg);
+		color: var(--color-muted);
+	}
+
+	.cta-button {
+		margin-top: var(--spacing-xl);
+	}
+</style>

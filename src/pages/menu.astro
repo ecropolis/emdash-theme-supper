@@ -1,0 +1,173 @@
+---
+/**
+ * The full menu, grouped by `menu_section` taxonomy term. Section order
+ * follows the well-known slugs first so the menu reads in course order;
+ * any sections editors add beyond those append after, so nothing new
+ * ever silently disappears.
+ */
+import { getTaxonomyTerms, getEntriesByTerm } from "emdash";
+import Base from "../layouts/Base.astro";
+
+const SECTION_ORDER = ["starters", "mains", "desserts", "drinks"];
+
+const terms = await getTaxonomyTerms("menu_section");
+const ordered = [...terms].sort((a, b) => {
+	const ai = SECTION_ORDER.indexOf(a.slug);
+	const bi = SECTION_ORDER.indexOf(b.slug);
+	return (ai === -1 ? SECTION_ORDER.length : ai) - (bi === -1 ? SECTION_ORDER.length : bi);
+});
+
+const sections = await Promise.all(
+	ordered.map(async (term) => {
+		const entries = await getEntriesByTerm("menu_items", "menu_section", term.slug);
+		const dishes = [...entries]
+			.filter((d: any) => d.data.status === "published")
+			.sort((a: any, b: any) => (a.data.sort_order ?? 0) - (b.data.sort_order ?? 0));
+		return { term, dishes };
+	}),
+);
+
+const dietaryChips = (value?: string) =>
+	(value ?? "")
+		.split(",")
+		.map((s) => s.trim())
+		.filter(Boolean);
+---
+
+<Base title="Menu" description="The full menu — starters, mains, desserts, and drinks, with prices.">
+	<div class="container">
+		<header class="menu-header">
+			<h1>The Menu</h1>
+			<p>Everything is cooked over the fire. Dishes change with the seasons; prices include nothing you didn't order.</p>
+			<p class="menu-legend">V vegetarian · VG vegan · GF gluten-free</p>
+		</header>
+
+		{sections.filter((s) => s.dishes.length > 0).map(({ term, dishes }) => (
+			<section class="menu-section" id={term.slug}>
+				<h2 class="menu-section-title">{term.label}</h2>
+				<ul class="dish-list">
+					{dishes.map((dish: any) => (
+						<li class="dish">
+							<div class="dish-row">
+								<h3 class="dish-name">
+									{dish.data.title}
+									{dietaryChips(dish.data.dietary).map((chip) => (
+										<i class="dietary-chip">{chip}</i>
+									))}
+								</h3>
+								<span class="dish-leader" aria-hidden="true" />
+								{dish.data.price && <span class="dish-price">{dish.data.price}</span>}
+							</div>
+							{dish.data.description && <p class="dish-description">{dish.data.description}</p>}
+						</li>
+					))}
+				</ul>
+			</section>
+		))}
+	</div>
+</Base>
+
+<style>
+	.menu-header {
+		text-align: center;
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-xl);
+	}
+
+	.menu-header p {
+		margin-top: var(--spacing-md);
+		font-size: var(--font-size-lg);
+		color: var(--color-muted);
+	}
+
+	.menu-header .menu-legend {
+		font-size: var(--font-size-sm);
+		letter-spacing: 0.04em;
+	}
+
+	.menu-section {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-2xl);
+	}
+
+	.menu-section-title {
+		font-size: var(--font-size-2xl);
+		text-align: center;
+		margin-bottom: var(--spacing-xl);
+		position: relative;
+	}
+
+	.menu-section-title::after {
+		content: "";
+		display: block;
+		width: 48px;
+		height: 2px;
+		background: var(--color-brand);
+		margin: var(--spacing-sm) auto 0;
+	}
+
+	.dish-list {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xl);
+		padding: 0;
+		margin: 0;
+	}
+
+	.dish-row {
+		display: flex;
+		align-items: baseline;
+		gap: var(--spacing-sm);
+	}
+
+	.dish-name {
+		font-size: var(--font-size-lg);
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--spacing-xs);
+	}
+
+	.dish-leader {
+		flex: 1;
+		border-bottom: 1px dotted var(--color-border);
+		transform: translateY(-4px);
+	}
+
+	.dish-price {
+		font-family: var(--font-heading);
+		font-size: var(--font-size-lg);
+		font-weight: var(--font-weight-heading);
+		color: var(--color-brand);
+		white-space: nowrap;
+	}
+
+	.dish-price::before {
+		content: "$";
+		font-size: 0.75em;
+		opacity: 0.7;
+		margin-right: 1px;
+	}
+
+	.dish-description {
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+		line-height: var(--leading-normal);
+		margin-top: var(--spacing-xs);
+		max-width: 60ch;
+	}
+
+	.dietary-chip {
+		font-style: normal;
+		font-family: var(--font-body);
+		font-size: var(--font-size-xs);
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		color: var(--color-success);
+		border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
+		border-radius: var(--radius-sm);
+		padding: 0 var(--spacing-xs);
+	}
+</style>
